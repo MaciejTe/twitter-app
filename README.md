@@ -16,8 +16,8 @@ All needed dependencies and quickstart [here](https://skaffold.dev/docs/quicksta
 ## DevOps and logging
 
 
-### TODO: 
+### TODO:
 1. Swagger docs
 2. unit tests
 3. locust tests
-4. 
+4. Auth

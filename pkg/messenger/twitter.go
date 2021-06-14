@@ -34,13 +34,13 @@ func (t *Twitter) InsertMessage(message *models.Message) (*models.Message, error
 	message.CreatedAt = now
 	result, err := t.collection.InsertOne(ctx, message)
 	if err != nil {
-		log.Error("Failed to insert document into mongoDB. Details: %v", err)
+		log.Error("Failed to insert document into mongoDB. Details: ", err)
 		return nil, err
 	}
 	if oid, ok := result.InsertedID.(primitive.ObjectID); ok {
 		message.ID = oid.Hex()
 	}
-	log.Info("Inserted ID: %v", message.ID)
+	log.Info("Inserted ID: ", message.ID)
 	return message, nil
 }
 
@@ -54,7 +54,7 @@ func (t *Twitter) FetchMessagesCount(rawFilters models.MessageFilter) (int64, er
 		filters,
 	)
 	if err != nil {
-		log.Error("Failed to fetch document count from mongoDB. Details: %v", err)
+		log.Error("Failed to fetch document count from mongoDB. Details: ", err)
 		return -1, err
 	}
 	return count, nil

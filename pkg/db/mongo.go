@@ -2,10 +2,10 @@ package db
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"github.com/MaciejTe/twitter/pkg/config"
+	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -48,5 +48,7 @@ func (m *MongoConnector) Connect() error {
 func (m *MongoConnector) Disconnect() {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
-	m.Client.Disconnect(ctx)
+	if err := m.Client.Disconnect(ctx); err != nil {
+		log.Error("Failed to disconnect from mongoDB, Details: ", err)
+	}
 }

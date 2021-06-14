@@ -14,6 +14,9 @@ import (
 )
 
 func main() {
+	log.SetFormatter(&log.JSONFormatter{})
+	log.SetOutput(os.Stdout)
+
 	log.Info("Reading application configuration")
 	settings := config.NewConfig()
 
@@ -27,8 +30,6 @@ func main() {
 	defer connector.Disconnect()
 
 	app := fiber.New()
-	log.SetFormatter(&log.JSONFormatter{})
-	log.SetOutput(os.Stdout)
 
 	twitter := messenger.NewTwitter(database, settings.Database.CollectionName)
 
