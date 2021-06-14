@@ -1,0 +1,23 @@
+apiVersion: skaffold/v2beta17
+kind: Config
+metadata:
+  name: twitter
+build:
+  artifacts:
+  - image: twitter_app_dev
+    context: "deployment/"
+    docker:
+      dockerfile: Dockerfile.dev
+deploy:
+  kubectl:
+    manifests:
+    - k8s-twitter-deployment.yaml
+portForward:
+  - resourceType: deployment
+    resourceName: twitter-deployment
+    port: 3000
+    localPort: 3000
+  - resourceType: deployment
+    resourceName: twitter-deployment
+    port: 27017
+    localPort: 27018

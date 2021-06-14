@@ -1,0 +1,17 @@
+FROM golang:1.16.5
+
+# install inotify for auto-recompiling
+RUN apt update; apt install -y make
+
+WORKDIR /app
+
+# Copy golang dependency manifests
+COPY go.mod /app
+COPY go.sum /app
+
+# Cache the downloaded dependency in the layer.
+RUN go mod download
+
+COPY . /app/
+RUN GOOS=linux GOARCH=amd64 go build -o /app/twitter -v .
+CMD ["./twitter"]

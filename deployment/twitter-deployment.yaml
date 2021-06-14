@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.functions.veliki_api.name }}
+  namespace: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.functions.veliki_api.name }}
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.functions.veliki_api.name }}
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.imagePullSecrets }}
+      containers:
+        - env:
+          image: {{ .Values.global.baseArtifactory }}/{{ .Values.functions.veliki.name }}/{{ .Values.images.veliki_api.name }}:{{ .Values.images.veliki_api.tag }}
+          imagePullPolicy: Always
+          name: {{ .Values.functions.veliki_api.name }}
+          resources: {}
+          volumeMounts:
+            - mountPath: /app/.env
+              subPath: .env
+              name: {{ .Values.functions.veliki_api.name }}-env
+            - mountPath: /app/pv
+              name: veliki-data
+      restartPolicy: Always
+      volumes:
+        - name: {{ .Values.functions.veliki_api.name }}-env
+          secret:
+            secretName: {{ .Values.functions.veliki_api.name }}-env
+            items:
+              - key: .env
+                path: .env
+        - name: veliki-data
+          persistentVolumeClaim:
+            claimName: veliki-data-pvc
+status: {}

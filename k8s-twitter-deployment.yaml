@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: twitter-secret
+  namespace: default
+type: Opaque
+data:
+  DB_URI: bW9uZ29kYjovL3Jvb3Q6cm9vdEBsb2NhbGhvc3Q6MjcwMTcvdHdpdHRlcj9hdXRoU291cmNlPWFkbWluJnJlYWRQcmVmZXJlbmNlPXByaW1hcnkmc3NsPWZhbHNl
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: twitter-config
+  namespace: default
+data:
+  API_PORT: "3000"
+  DB_NAME: twitter
+  DB_COLLECTION_NAME: messages
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: twitter-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: twitter-app
+  template:
+    metadata:
+      labels:
+        app: twitter-app
+    spec:
+      containers:
+      - name: twitter-deployment
+        image: twitter_app_dev
+        env:
+          - name: DB_URI
+            valueFrom:
+              secretKeyRef:
+                name: twitter-secret
+                key: DB_URI
+          - name: API_PORT
+            valueFrom:
+              configMapKeyRef:
+                name: twitter-config
+                key: API_PORT
+          - name: DB_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: twitter-config
+                key: DB_NAME
+          - name: DB_COLLECTION_NAME
+            valueFrom:
+              configMapKeyRef:
+                name: twitter-config
+                key: DB_COLLECTION_NAME
+      - name: mongo
+        image: mongo:4.4
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: root
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: root
