@@ -22,6 +22,11 @@
 ##
 #######################################
 -->
+0.1.1 (14.06.2021)
+---------------------
+    - Prepared solution for linters&checks inside dev container
+    - Fixed all issues found by linters
+
 0.1.0 (14.06.2021)
 ---------------------
     - Initialised repository, added README and .gitignore
