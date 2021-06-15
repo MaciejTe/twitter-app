@@ -1,30 +1,28 @@
 package config
 
 import (
-	"log"
-
 	"github.com/kelseyhightower/envconfig"
 )
 
 // Config holds application configuration. Currently Config struct is populated from environment variables (12-factor app).
 type Config struct {
 	Server struct {
-		Port string `envconfig:"API_PORT"`
+		Port string `envconfig:"API_PORT" default: "3000"`
 	}
 	Database struct {
-		URI            string `envconfig:"DB_URI"`
-		DbName         string `envconfig:"DB_NAME"`
-		CollectionName string `envconfig:"DB_COLLECTION_NAME"`
+		URI            string `required:"true" envconfig:"DB_URI"`
+		DbName         string `envconfig:"DB_NAME" default: "twitter" `
+		CollectionName string `envconfig:"DB_COLLECTION_NAME" default: "messages"`
 	}
 }
 
 // NewConfig creates Config structure
-func NewConfig() *Config {
+func NewConfig() (*Config, error) {
 	var cfg Config
 
 	err := envconfig.Process("", &cfg)
 	if err != nil {
-		log.Fatal(err.Error())
+		return nil, err
 	}
-	return &cfg
+	return &cfg, nil
 }

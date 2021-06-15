@@ -18,7 +18,7 @@ func MessagesEndpoint(app fiber.Router, messenger messenger.Messenger) {
 // addMessage is handler for inserting messages into database
 func addMessage(messenger messenger.Messenger) fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		var requestBody *models.Message
+		var requestBody models.Message
 		err := c.BodyParser(&requestBody)
 		if err != nil {
 			_ = c.JSON(&fiber.Map{
