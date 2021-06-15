@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"strings"
 	"time"
 
@@ -24,8 +25,8 @@ func NewMessageFilter(tags, from, to string) (*MessageFilter, error) {
 	if len(from) != 0 {
 		filters.From, err = time.Parse(time.RFC3339, from)
 		if err != nil {
-			log.Error("Failed to convert start filtering date to time.Time. Details: ", err)
-			return nil, err
+			log.Error("Failed to convert start filtering date to RFC3339 time format. Details: ", err)
+			return nil, errors.New("failed to convert start filtering date to RFC3339 time format")
 		}
 	} else {
 		filters.From = time.Time{}
@@ -34,13 +35,13 @@ func NewMessageFilter(tags, from, to string) (*MessageFilter, error) {
 		filters.To, err = time.Parse(time.RFC3339, to)
 		if err != nil {
 			log.Error("Failed to convert stop filtering date to time.Time. Details: ", err)
-			return nil, err
+			return nil, errors.New("failed to convert stop filtering date to RFC3339 time format")
 		}
 	} else {
 		filters.To, err = time.Parse(time.RFC3339, "3000-01-01T00:00:00Z")
 		if err != nil {
 			log.Error("Failed to convert max date to time.Time. Details: ", err)
-			return nil, err
+			return nil, errors.New("failed to convert max filtering date to RFC3339 time format")
 		}
 	}
 	return &filters, nil

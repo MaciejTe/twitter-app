@@ -9,6 +9,8 @@ import (
 
 	"github.com/MaciejTe/twitter/api"
 	"github.com/MaciejTe/twitter/pkg/config"
+	"github.com/MaciejTe/twitter/pkg/db"
+	"github.com/MaciejTe/twitter/pkg/messenger"
 )
 
 func main() {
@@ -21,7 +23,17 @@ func main() {
 		log.Fatal("Fatal error during config creation: ", err)
 	}
 
-	app, err := api.NewServer(settings)
+	connector := db.NewMongoConnector(*settings)
+	err = connector.Connect()
+	if err != nil {
+		log.Fatal("Failed to connect to database. Details: ", err)
+	}
+	database := connector.Client.Database(settings.Database.DbName)
+	defer connector.Disconnect()
+
+	twitter := messenger.NewTwitter(database, settings.Database.CollectionName)
+
+	app, err := api.NewServer(settings, database, twitter)
 	if err != nil {
 		log.Fatal("Fatal error during application startup: ", err)
 	}
@@ -34,7 +46,9 @@ func main() {
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	<-c
-	app.Shutdown()
+	if err = app.Shutdown(); err != nil {
+		log.Error("Failed to shutdown server. Details: ", err)
+	}
 
 	log.Info("Shutting down server")
 	os.Exit(0)
