@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"testing"
 	"time"
 
@@ -79,13 +80,7 @@ func TestNewMessageFilterNegativeCases(t *testing.T) {
 			inputFrom:      "2021-06-13",
 			inputTo:        "2022-06-13T15:00:05Z",
 			expectedResult: nil,
-			expectedError: &time.ParseError{
-				Layout:     "2006-01-02T15:04:05Z07:00",
-				Value:      "2021-06-13",
-				LayoutElem: "T",
-				ValueElem:  "",
-				Message:    "",
-			},
+			expectedError:  errors.New("failed to convert start filtering date to RFC3339 time format"),
 		},
 		{
 			name:           "Insert improper RFC-3339 string into to field",
@@ -93,13 +88,7 @@ func TestNewMessageFilterNegativeCases(t *testing.T) {
 			inputFrom:      "",
 			inputTo:        "2022-06-13T15:012q5Z",
 			expectedResult: nil,
-			expectedError: &time.ParseError{
-				Layout:     "2006-01-02T15:04:05Z07:00",
-				Value:      "2022-06-13T15:012q5Z",
-				LayoutElem: ":",
-				ValueElem:  "2q5Z",
-				Message:    "",
-			},
+			expectedError:  errors.New("failed to convert stop filtering date to RFC3339 time format"),
 		},
 	}
 
