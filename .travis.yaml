@@ -1,0 +1,20 @@
+dist: trusty
+sudo: required
+services:
+  - docker
+language: go
+go:
+  - "1.16.5"
+
+before_install:
+  - go get -t -v ./...
+
+script:
+  - go test -race -coverprofile=coverage.txt -covermode=atomic -v ./...
+  - go mod verify
+  - GOOS=linux go build
+  - go vet ./...
+  - make lint
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
