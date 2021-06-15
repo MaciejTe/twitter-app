@@ -3,14 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/signal"
 
-	"github.com/gofiber/fiber/v2"
 	log "github.com/sirupsen/logrus"
 
-	endpoints "github.com/MaciejTe/twitter/api/enpoints"
+	"github.com/MaciejTe/twitter/api"
 	"github.com/MaciejTe/twitter/pkg/config"
-	"github.com/MaciejTe/twitter/pkg/db"
-	"github.com/MaciejTe/twitter/pkg/messenger"
 )
 
 func main() {
@@ -18,23 +16,26 @@ func main() {
 	log.SetOutput(os.Stdout)
 
 	log.Info("Reading application configuration")
-	settings := config.NewConfig()
-
-	// db connection here
-	connector := db.NewMongoConnector(*settings)
-	err := connector.Connect()
+	settings, err := config.NewConfig()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Fatal error during config creation: ", err)
 	}
-	database := connector.Client.Database(settings.Database.DbName)
-	defer connector.Disconnect()
 
-	app := fiber.New()
-
-	twitter := messenger.NewTwitter(database, settings.Database.CollectionName)
-
-	endpoints.MessagesEndpoint(app, twitter)
+	app, err := api.NewServer(settings)
+	if err != nil {
+		log.Fatal("Fatal error during application startup: ", err)
+	}
 	log.Info("Starting API")
 
-	log.Fatal(app.Listen(fmt.Sprintf(":%s", settings.Server.Port)))
+	go func() {
+		log.Fatal(app.Listen(fmt.Sprintf(":%s", settings.Server.Port)))
+	}()
+
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+	<-c
+	app.Shutdown()
+
+	log.Info("Shutting down server")
+	os.Exit(0)
 }

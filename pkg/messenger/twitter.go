@@ -27,7 +27,7 @@ func NewTwitter(database *mongo.Database, collectionName string) *Twitter {
 }
 
 // InsertMessage inserts sent message to database
-func (t *Twitter) InsertMessage(message *models.Message) (*models.Message, error) {
+func (t *Twitter) InsertMessage(message models.Message) (*models.Message, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
 	defer cancel()
 	now := time.Now()
@@ -41,7 +41,7 @@ func (t *Twitter) InsertMessage(message *models.Message) (*models.Message, error
 		message.ID = oid.Hex()
 	}
 	log.Info("Inserted ID: ", message.ID)
-	return message, nil
+	return &message, nil
 }
 
 // FetchMessagesCount gets the count of messages, filtering them using provided message filters
