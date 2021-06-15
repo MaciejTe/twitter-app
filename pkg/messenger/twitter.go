@@ -46,7 +46,7 @@ func (t *Twitter) InsertMessage(message models.Message) (*models.Message, error)
 
 // FetchMessagesCount gets the count of messages, filtering them using provided message filters
 func (t *Twitter) FetchMessagesCount(rawFilters models.MessageFilter) (int64, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	filters := prepareFilters(rawFilters)
 	count, err := t.collection.CountDocuments(

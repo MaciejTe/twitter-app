@@ -12,6 +12,12 @@ build_image:
 build_image_dev:
 	docker build -t twitter_app_dev -f Dockerfile.dev .
 
+build_image_tests:
+	docker build -t twitter_app_tests -f tests/Dockerfile tests/
+
+dev-tests:
+	docker run --network host --rm -it --env-file .env -v "${CWD}/tests":/tests -w /tests twitter_app_tests bash
+
 run:
 	docker run --network host --rm -it --env-file .env twitter_app
 
@@ -22,7 +28,7 @@ build:
 	go build -o twitter_app
 
 test:
-	go test
+	go test -race -coverprofile=coverage.txt -covermode=atomic -v ./...
 
 lint: ## Lint the files
 	@make dep

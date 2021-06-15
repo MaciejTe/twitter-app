@@ -28,7 +28,8 @@ func addMessage(messenger messenger.Messenger) fiber.Handler {
 		}
 		result, err := messenger.InsertMessage(requestBody)
 		if err != nil {
-			_ = c.JSON(&fiber.Map{
+			c.Status(http.StatusInternalServerError)
+			return c.JSON(&fiber.Map{
 				"status": false,
 				"error":  err,
 			})
@@ -55,14 +56,15 @@ func getMessages(messenger messenger.Messenger) fiber.Handler {
 		if err != nil {
 			c.Status(http.StatusUnprocessableEntity)
 			return c.JSON(&fiber.Map{
-				"error": err,
+				"error": err.Error(),
 			})
 		}
 		count, err := messenger.FetchMessagesCount(*filters)
 		if err != nil {
-			_ = c.JSON(&fiber.Map{
+			c.Status(http.StatusInternalServerError)
+			return c.JSON(&fiber.Map{
 				"status": false,
-				"error":  err,
+				"error":  err.Error(),
 			})
 		}
 		return c.JSON(&fiber.Map{
