@@ -22,6 +22,9 @@
 ##
 #######################################
 -->
+0.2.2 (16.06.2021)
+---------------------
+    - Updated README with endpoints description
 0.2.1 (16.06.2021)
 ---------------------
     - Added end to end python tests
