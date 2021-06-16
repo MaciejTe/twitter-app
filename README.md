@@ -7,6 +7,34 @@ containing a specific tag.
 3. Python/pytest - for integration/E2E tests
 4. Kubernetes - perfect to deploy and scale application
 5. Skaffold/Tilt - nice k8s development tools
+
+## Endpoints
+
+**POST /messages**
+
+Example: `http://localhost:3000/messages`
+
+JSON Schema:
+1. `text` - message to be posted
+2. `tags` - tags to be assigned to message
+
+Sample JSON payload:
+```
+{
+    "text": "sample message",
+    "tags": ["tag1", "tag2"]
+}
+```
+
+**GET /messages**
+
+Example: `http://localhost:3000/messages?from=2020-06-13T15:00:05Z&to=2021-06-13T15:00:05Z&tags=zx,zs`
+
+Query parameters:
+1. `tags` - list of tags, comma separated
+2. `from` - RFC3339-compatible start filtering time
+3. `to` - RFC3339-compatible stop filtering time
+
 ## Development
 
 1. Install [Skaffold](https://skaffold.dev/docs/install/)
