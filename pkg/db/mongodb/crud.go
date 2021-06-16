@@ -11,11 +11,13 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// MongoCRUD implements CRUD interface, allows to operate on mongoDB database
 type MongoCRUD struct {
 	Database   *mongo.Database
 	collection *mongo.Collection
 }
 
+// NewMongoCRUD creates MongoCRUD structure, ready to work on given database and collection
 func NewMongoCRUD(connector *MongoConnector, dbName, collectionName string) *MongoCRUD {
 	var crud MongoCRUD
 	database := connector.Client.Database(dbName)
@@ -25,6 +27,7 @@ func NewMongoCRUD(connector *MongoConnector, dbName, collectionName string) *Mon
 	return &crud
 }
 
+// Create inserts document into mongoDB
 func (m *MongoCRUD) Create(message models.Message) (models.Message, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
@@ -40,6 +43,7 @@ func (m *MongoCRUD) Create(message models.Message) (models.Message, error) {
 	return message, nil
 }
 
+// Count returns number of found documents according to given filters
 func (m *MongoCRUD) Count(filters bson.M) (int64, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
