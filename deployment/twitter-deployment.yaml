@@ -51,7 +51,7 @@ spec:
     spec:
       containers:
       - name: twitter-deployment
-        image: twitter_app
+        image: twitter_app_dev
         imagePullPolicy: Never
         ports:
           - containerPort: 3000
