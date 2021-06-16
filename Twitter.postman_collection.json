@@ -1,0 +1,70 @@
+{
+	"info": {
+		"_postman_id": "0888611f-2edc-422f-925d-97d5fd3775df",
+		"name": "Twitter",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET messages/",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/messages?from=2020-06-13T15:00:05Z&to=2021-06-13T15:00:05Z&tags=zx,zs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"messages"
+					],
+					"query": [
+						{
+							"key": "from",
+							"value": "2020-06-13T15:00:05Z"
+						},
+						{
+							"key": "to",
+							"value": "2021-06-13T15:00:05Z"
+						},
+						{
+							"key": "tags",
+							"value": "zx,zs"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST messages",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"text\": \"sample message\",\n    \"tags\": [\"tag1\", \"tag2\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/messages",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"messages"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
