@@ -15,7 +15,7 @@ build_image_dev:
 build_image_tests:
 	docker build -t twitter_app_tests -f tests/Dockerfile tests/
 
-dev-tests:
+dev-tests: ## Start Python tests container
 	docker run --network host --rm -it --env-file .env -v "${CWD}/tests":/tests -w /tests twitter_app_tests bash
 
 run:
@@ -24,11 +24,8 @@ run:
 dev:
 	docker run --network host --rm -it --env-file .env -v "${CWD}":/app/ twitter_app_dev bash
 
-build:
-	go build -o twitter_app
 
-test:
-	go test -race -coverprofile=coverage.txt -covermode=atomic -v ./...
+# FOLLOWING COMMANDS HAVE TO BE RUN INSIDE TWITTER DOCKER CONTAINER
 
 lint: ## Lint the files
 	@make dep
@@ -49,11 +46,17 @@ coverhtml: coverage ## Generate global code coverage report in HTML
 	@go tool cover -html=coverage.out -o coverage.html
 
 
-dep: ## Get the dependencies
+dep: ## Get the test/lint dependencies
 	@go get -u golang.org/x/lint/golint
 	@go get github.com/fzipp/gocyclo/cmd/gocyclo@latest
 	@go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.40.1
 	@go get golang.org/x/tools/cmd/goimports
+
+build: ## Build Twitter application
+	go build -o twitter_app
+
+test: ## Run all go-based tests
+	go test -race -coverprofile=coverage.txt -covermode=atomic -v ./...
 
 help: ## Display this help screen
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

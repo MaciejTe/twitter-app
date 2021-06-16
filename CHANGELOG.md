@@ -22,6 +22,15 @@
 ##
 #######################################
 -->
+0.2.0 (16.06.2021)
+---------------------
+    - Created CRUD interface to make database mocking possible
+  
+0.1.2 (15.06.2021)
+---------------------
+    - Added end to end python tests
+    - Added config and message_filter tests
+
 0.1.1 (14.06.2021)
 ---------------------
     - Prepared solution for linters&checks inside dev container

@@ -1,61 +1,42 @@
 package messenger
 
 import (
-	"context"
 	"time"
 
+	"github.com/MaciejTe/twitter/pkg/db"
 	"github.com/MaciejTe/twitter/pkg/models"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
-
-	log "github.com/sirupsen/logrus"
 )
 
 // Twitter implements Messager interface, is example of how different messaging implementations can be used
 type Twitter struct {
-	collection *mongo.Collection
+	crud db.CRUD
 }
 
 // NewTwitter creates ready to work Twitter struct
-func NewTwitter(database *mongo.Database, collectionName string) *Twitter {
-	messagesCollection := database.Collection(collectionName)
-
+func NewTwitter(crud db.CRUD, collectionName string) *Twitter {
 	var twitter Twitter
-	twitter.collection = messagesCollection
+	twitter.crud = crud
 	return &twitter
 }
 
 // InsertMessage inserts sent message to database
 func (t *Twitter) InsertMessage(message models.Message) (*models.Message, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
-	defer cancel()
 	now := time.Now()
 	message.CreatedAt = now
-	result, err := t.collection.InsertOne(ctx, message)
+	updatedMessage, err := t.crud.Create(message)
 	if err != nil {
-		log.Error("Failed to insert document into mongoDB. Details: ", err)
 		return nil, err
 	}
-	if oid, ok := result.InsertedID.(primitive.ObjectID); ok {
-		message.ID = oid.Hex()
-	}
-	log.Info("Inserted ID: ", message.ID)
-	return &message, nil
+	return &updatedMessage, nil
 }
 
 // FetchMessagesCount gets the count of messages, filtering them using provided message filters
 func (t *Twitter) FetchMessagesCount(rawFilters models.MessageFilter) (int64, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
 	filters := prepareFilters(rawFilters)
-	count, err := t.collection.CountDocuments(
-		ctx,
-		filters,
-	)
+	count, err := t.crud.Count(filters)
 	if err != nil {
-		log.Error("Failed to fetch document count from mongoDB. Details: ", err)
-		return -1, err
+		return count, err
 	}
 	return count, nil
 }
