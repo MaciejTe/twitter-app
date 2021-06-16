@@ -22,14 +22,21 @@
 ##
 #######################################
 -->
+0.2.1 (16.06.2021)
+---------------------
+    - Added end to end python tests
+    - Added config and message_filter tests
+    - Added Postman collection
+    - Added k8s deployment file
+
 0.2.0 (16.06.2021)
 ---------------------
     - Created CRUD interface to make database mocking possible
   
-0.1.2 (15.06.2021)
+0.1.3 (16.06.2021)
 ---------------------
-    - Added end to end python tests
-    - Added config and message_filter tests
+    - Updated test Dockerfile
+    - Updated README, added instructions
 
 0.1.1 (14.06.2021)
 ---------------------
