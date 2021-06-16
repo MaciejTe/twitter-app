@@ -4,9 +4,9 @@ metadata:
   name: twitter
 build:
   artifacts:
-  - image: twitter_app
+  - image: twitter_app_dev
     docker:
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
 deploy:
   kubectl:
     manifests:
