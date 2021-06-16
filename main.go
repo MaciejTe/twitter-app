@@ -28,7 +28,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Failed to connect to database. Details: ", err)
 	}
-	// database := connector.Client.Database(settings.Database.DbName)
+
 	crud := mongodb.NewMongoCRUD(connector, settings.Database.DbName, settings.Database.CollectionName)
 	defer connector.Disconnect()
 
