@@ -9,7 +9,7 @@ import (
 
 	"github.com/MaciejTe/twitter/api"
 	"github.com/MaciejTe/twitter/pkg/config"
-	"github.com/MaciejTe/twitter/pkg/db"
+	mongodb "github.com/MaciejTe/twitter/pkg/db/mongodb"
 	"github.com/MaciejTe/twitter/pkg/messenger"
 )
 
@@ -23,17 +23,18 @@ func main() {
 		log.Fatal("Fatal error during config creation: ", err)
 	}
 
-	connector := db.NewMongoConnector(*settings)
+	connector := mongodb.NewMongoConnector(*settings)
 	err = connector.Connect()
 	if err != nil {
 		log.Fatal("Failed to connect to database. Details: ", err)
 	}
-	database := connector.Client.Database(settings.Database.DbName)
+	// database := connector.Client.Database(settings.Database.DbName)
+	crud := mongodb.NewMongoCRUD(connector, settings.Database.DbName, settings.Database.CollectionName)
 	defer connector.Disconnect()
 
-	twitter := messenger.NewTwitter(database, settings.Database.CollectionName)
+	twitter := messenger.NewTwitter(crud, settings.Database.CollectionName)
 
-	app, err := api.NewServer(settings, database, twitter)
+	app, err := api.NewServer(settings, crud.Database, twitter)
 	if err != nil {
 		log.Fatal("Fatal error during application startup: ", err)
 	}

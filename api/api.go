@@ -1,7 +1,7 @@
 package api
 
 import (
-	endpoints "github.com/MaciejTe/twitter/api/enpoints"
+	endpoints "github.com/MaciejTe/twitter/api/endpoints"
 	"github.com/MaciejTe/twitter/pkg/config"
 	"github.com/MaciejTe/twitter/pkg/messenger"
 	"github.com/gofiber/fiber/v2"
