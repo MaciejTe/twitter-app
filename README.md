@@ -25,6 +25,22 @@ Sample JSON payload:
     "tags": ["tag1", "tag2"]
 }
 ```
+Sample response:
+```
+{
+    "count": 1,
+    "result": {
+        "id": "60c9f412a8b77a729096d3a5",
+        "text": "sample message",
+        "tags": [
+            "tag1",
+            "tag2"
+        ],
+        "created_at": "2021-06-16T12:52:34.278183643Z"
+    },
+    "status": true
+}
+```
 
 **GET /messages**
 
@@ -34,6 +50,14 @@ Query parameters:
 1. `tags` - list of tags, comma separated
 2. `from` - RFC3339-compatible start filtering time
 3. `to` - RFC3339-compatible stop filtering time
+
+Sample response:
+```
+{
+    "count": 1862,
+    "status": true
+}
+```
 
 ## Development
 
